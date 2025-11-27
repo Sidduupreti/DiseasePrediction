@@ -51,13 +51,13 @@ def diabetesprediction(request):
 
     data = form.cleaned_data
     pregnancies = data.get('pregnancies', 0) or 0
-    glucose = data['glucose'] or 0
-    bp = data['bp'] or 0
-    st = data['st'] or 0
-    insulin = data['insulin'] or 0
-    bmi = data['bmi'] or 0
-    dp = data['dp'] or 0
-    age = data['age'] or 0
+    glucose = data.get('glucose', 0) or 0
+    bp = data.get('bp', 0) or 0
+    st = data.get('st', 0) or 0
+    insulin = data.get('insulin', 0) or 0
+    bmi = data.get('bmi', 0) or 0
+    dp = data.get('dp', 0) or 0
+    age = data.get('age', 0) or 0
 
     # Handle account creation for anonymous users if saving appointment
     user = request.user if request.user.is_authenticated else None
@@ -121,8 +121,8 @@ def diabetesprediction(request):
     # Combine the results into a formatted string with each prediction on a new line
     result_text = '\n'.join([f"{model_name}: {prediction}" for model_name, prediction in results.items()])
 
-    # Optionally save submission and appointment
-    if data.get('save_and_appointment'):
+    # Save submission always
+    try:
         submission = DiabetesSubmission(
             user=user,
             pregnancies=pregnancies,
@@ -133,11 +133,15 @@ def diabetesprediction(request):
             bmi=bmi,
             dp=dp,
             age=age,
-            need_appointment=True,
-            appointment_date=data.get('appointment_date'),
-            appointment_time=data.get('appointment_time'),
+            need_appointment=bool(data.get('save_and_appointment')),
+            appointment_date=data.get('appointment_date') if data.get('save_and_appointment') else None,
+            appointment_time=data.get('appointment_time') if data.get('save_and_appointment') else None,
         )
         submission.save()
+        messages.success(request, "Submission saved successfully.")
+    except Exception as e:
+        messages.error(request, f"Error saving submission: {e}")
+        return redirect('diabetes')
 
     return render(request, 'diabetesresult.html', {'result': result_text})
 
