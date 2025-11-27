@@ -15,29 +15,29 @@
         <!-- Gender selection -->
         <div class="form-group">
             <label for="gender">Gender</label>
-            <select class="form-control" id="gender" name="gender" required>
-                <option value="" disabled selected>-- Select Gender --</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
+            <select class="form-control" id="gender" name="gender">
+                <option value="--">-- Select Gender --</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
             </select>
         </div>
 
         <!-- Pregnancies -->
         <div class="form-group">
-            <label for="pregnancies">Pregnancies (0–10)</label>
-            <input type="number" class="form-control" id="pregnancies" name="pregnancies" min="0" max="10" value="0" required>
+            <label for="pregnancies">Pregnancies (0–20)</label>
+            <input type="number" class="form-control" id="pregnancies" name="pregnancies" min="0" max="20" value="0" required>
         </div>
 
         <!-- Glucose -->
         <div class="form-group">
-            <label for="glucose">Glucose: Plasma glucose concentration (50–300 mg/dL)</label>
-            <input type="number" class="form-control" id="glucose" name="glucose" min="50" max="300" required>
+            <label for="glucose">Glucose (50–300 mg/dL)</label>
+            <input type="number" class="form-control" id="glucose" name="glucose" min="0" required>
         </div>
 
         <!-- Blood Pressure -->
         <div class="form-group">
-            <label for="bp">Blood Pressure: Diastolic (40–150 mm Hg)</label>
-            <input type="number" class="form-control" id="bp" name="bp" min="40" max="150" required>
+            <label for="bp">Blood Pressure (40–150 mm Hg)</label>
+            <input type="number" class="form-control" id="bp" name="bp" min="0" required>
         </div>
 
         <!-- Skin Thickness -->
@@ -48,34 +48,60 @@
 
         <!-- Insulin -->
         <div class="form-group">
-            <label for="insulin">Insulin: 2-Hour serum insulin (0–900 mu U/ml)</label>
+            <label for="insulin">Insulin (0–900 mu U/ml)</label>
             <input type="number" class="form-control" id="insulin" name="insulin" min="0" max="900" required>
         </div>
 
         <!-- BMI -->
         <div class="form-group">
-            <label for="bmi">BMI: Body Mass Index (10–70)</label>
-            <input type="number" step="0.1" class="form-control" id="bmi" name="bmi" min="10" max="70" required>
+            <label for="bmi">BMI (10–70)</label>
+            <input type="number" step="0.1" class="form-control" id="bmi" name="bmi" min="0" required>
         </div>
 
         <!-- Diabetes Pedigree -->
         <div class="form-group">
             <label for="dp">Diabetes Pedigree Function (0.0–3.0)</label>
-            <input type="number" step="0.01" class="form-control" id="dp" name="dp" min="0.0" max="3.0" required>
+            <input type="number" step="0.001" class="form-control" id="dp" name="dp" min="0" max="10" required>
         </div>
 
         <!-- Age -->
         <div class="form-group">
-            <label for="age">Age (1–100 years)</label>
-            <input type="number" class="form-control" id="age" name="age" min="1" max="100" required>
+            <label for="age">Age (1–120)</label>
+            <input type="number" class="form-control" id="age" name="age" min="1" max="120" required>
+        </div>
+
+        <hr>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="save_and_appointment" name="save_and_appointment" value="on">
+            <label class="form-check-label" for="save_and_appointment">Save this submission and request appointment</label>
+        </div>
+
+        <div id="appointment_fields" style="display:none; margin-top:10px;">
+            <div class="form-group">
+                <label for="appointment_date">Appointment Date (optional)</label>
+                <input type="date" class="form-control" id="appointment_date" name="appointment_date">
+            </div>
+            <div class="form-group">
+                <label for="appointment_time">Appointment Time (optional)</label>
+                <input type="time" class="form-control" id="appointment_time" name="appointment_time">
+            </div>
+
+            <!-- If user not logged in, ask for email/password to create/login -->
+            <div id="account_block">
+                <p>If you are not logged in we will create an account for you using the email below (password is stored hashed).</p>
+                <div class="form-group">
+                    <label for="account_email">Email</label>
+                    <input type="email" class="form-control" id="account_email" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="account_password">Password</label>
+                    <input type="password" class="form-control" id="account_password" name="password">
+                </div>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-
-    <div>
-        <hr><hr>
-    </div>
 
     <footer>
         {% include 'footer.html' %}
@@ -83,19 +109,12 @@
 
     {% include 'scripts.html' %}
 
-    <!-- Gender-based validation -->
     <script>
-        const genderSelect = document.getElementById("gender");
-        const pregnanciesInput = document.getElementById("pregnancies");
+        const saveCheckbox = document.getElementById('save_and_appointment');
+        const appointmentBlock = document.getElementById('appointment_fields');
 
-        genderSelect.addEventListener("change", function () {
-            if (this.value === "male") {
-                pregnanciesInput.value = 0;
-                pregnanciesInput.disabled = true;  // lock input for male
-            } else {
-                pregnanciesInput.disabled = false;
-                pregnanciesInput.value = ""; // allow female input
-            }
+        saveCheckbox.addEventListener('change', function() {
+            appointmentBlock.style.display = this.checked ? 'block' : 'none';
         });
     </script>
 

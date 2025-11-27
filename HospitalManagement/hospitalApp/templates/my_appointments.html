@@ -1,0 +1,13 @@
+<!-- html -->
+<h1>My Appointments</h1>
+<ul>
+  {% for a in appointments %}
+    <li>
+      <a href="{% url 'appointment_detail' a.pk %}">
+        {{ a.appointment_date }} {{ a.appointment_time }} — Diabetes Submission ({{ a.created_at }})
+      </a>
+    </li>
+  {% empty %}
+    <li>No appointments found.</li>
+  {% endfor %}
+</ul>

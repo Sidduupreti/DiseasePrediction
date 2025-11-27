@@ -35,3 +35,23 @@ class HeartDisease(models.Model):
     maximumHeartRate =models.IntegerField(null=True)
     ExerciseInducedAngina =models.IntegerField(null=True)
     STdepression =models.IntegerField(null=True)
+
+class DiabetesSubmission(models.Model):
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    pregnancies = models.IntegerField(null=True, blank=True)
+    glucose = models.FloatField(null=True, blank=True)
+    bp = models.FloatField(null=True, blank=True)
+    st = models.FloatField(null=True, blank=True)
+    insulin = models.FloatField(null=True, blank=True)
+    bmi = models.FloatField(null=True, blank=True)
+    dp = models.FloatField(null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True)
+
+    need_appointment = models.BooleanField(default=False)
+    appointment_date = models.DateField(null=True, blank=True)
+    appointment_time = models.TimeField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"DiabetesSubmission({self.user or 'anon'} - {self.created_at})"

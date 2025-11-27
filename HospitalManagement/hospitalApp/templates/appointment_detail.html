@@ -1,0 +1,17 @@
+<!-- html -->
+<h1>Appointment Detail</h1>
+<p>User: {{ appointment.user.username }} ({{ appointment.user.email }})</p>
+<p>Appointment Date: {{ appointment.appointment_date }}</p>
+<p>Appointment Time: {{ appointment.appointment_time }}</p>
+<p>Created At: {{ appointment.created_at }}</p>
+<p>Diabetes Prediction Data:</p>
+<ul>
+    <li>Pregnancies: {{ appointment.pregnancies }}</li>
+    <li>Glucose: {{ appointment.glucose }}</li>
+    <li>Blood Pressure: {{ appointment.bp }}</li>
+    <li>Skin Thickness: {{ appointment.st }}</li>
+    <li>Insulin: {{ appointment.insulin }}</li>
+    <li>BMI: {{ appointment.bmi }}</li>
+    <li>Diabetes Pedigree Function: {{ appointment.dp }}</li>
+    <li>Age: {{ appointment.age }}</li>
+</ul>
