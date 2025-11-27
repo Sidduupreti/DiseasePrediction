@@ -1,0 +1,36 @@
+{% load static %}
+{% include 'imports.html' %}
+{% include 'navbar.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - All Appointments</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+    <main>
+        <h2>All Appointments (Admin View)</h2>
+        <ul>
+          {% for a in appointments %}
+            <li>
+              <strong>User:</strong> {{ a.user.username }} ({{ a.user.email }})<br>
+              <strong>Appointment:</strong> {{ a.appointment_date }} {{ a.appointment_time }}<br>
+              <strong>Created:</strong> {{ a.created_at }}<br>
+              <a href="{% url 'appointment_detail' a.pk %}">View Details</a>
+            </li>
+          {% empty %}
+            <li>No appointments found.</li>
+          {% endfor %}
+        </ul>
+    </main>
+
+    <footer>
+        {% include 'footer.html' %}
+    </footer>
+
+    {% include 'scripts.html' %}
+</body>
+</html>

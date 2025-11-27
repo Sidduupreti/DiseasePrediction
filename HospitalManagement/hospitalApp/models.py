@@ -3,10 +3,10 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-# this one is for contact 
+# this one is for contact
 class contactEnquiry(models.Model):
     your_name =models.CharField(max_length=50)
-    your_email =models.EmailField(unique=True)
+    your_email =models.EmailField(unique=False)
     subject =models.CharField(max_length=50)
     messages =models.CharField(max_length=500)
 

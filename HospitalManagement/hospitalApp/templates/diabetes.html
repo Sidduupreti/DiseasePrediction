@@ -112,9 +112,20 @@
     <script>
         const saveCheckbox = document.getElementById('save_and_appointment');
         const appointmentBlock = document.getElementById('appointment_fields');
+        const genderSelect = document.getElementById('gender');
+        const pregnanciesField = document.getElementById('pregnancies');
 
         saveCheckbox.addEventListener('change', function() {
             appointmentBlock.style.display = this.checked ? 'block' : 'none';
+        });
+
+        genderSelect.addEventListener('change', function() {
+            if (this.value === 'M') {
+                pregnanciesField.disabled = true;
+                pregnanciesField.value = '0';
+            } else {
+                pregnanciesField.disabled = false;
+            }
         });
     </script>
 

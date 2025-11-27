@@ -65,9 +65,15 @@ def diabetesprediction(request):
         if account_form.is_valid():
             email = account_form.cleaned_data['email']
             password = account_form.cleaned_data['password']
-            if User.objects.filter(email=email).exists():
-                messages.error(request, "An account with this email already exists. Please sign in.")
-                return redirect('diabetes')
+            existing_user = User.objects.filter(email=email).first()
+            if existing_user:
+                # Check if password matches the existing user's password
+                if existing_user.check_password(password):
+                    user = existing_user
+                    login(request, user)
+                else:
+                    messages.error(request, "Incorrect password for existing account. Please sign in with correct password.")
+                    return redirect('diabetes')
             else:
                 user = User.objects.create_user(username=email, email=email, password=password)
                 login(request, user)
@@ -194,6 +200,14 @@ def my_appointments(request):
 def appointment_detail(request, pk):
     appt = get_object_or_404(DiabetesSubmission, pk=pk, user=request.user, need_appointment=True)
     return render(request, "appointment_detail.html", {"appointment": appt})
+
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def admin_appointments(request):
+    # Show all appointments for all users
+    qs = DiabetesSubmission.objects.filter(need_appointment=True).order_by("-appointment_date", "-appointment_time")
+    return render(request, "admin_appointments.html", {"appointments": qs})
 
 
 

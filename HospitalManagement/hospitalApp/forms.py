@@ -21,7 +21,7 @@ class signUpForm(UserCreationForm):
 
 class DiabetesForm(forms.Form):
     gender = forms.ChoiceField(choices=(('M','Male'),('F','Female')), required=False)
-    pregnancies = forms.IntegerField(min_value=0, max_value=20, initial=0)
+    pregnancies = forms.IntegerField(min_value=0, max_value=20, initial=0, required=False)
     glucose = forms.FloatField(min_value=0)
     bp = forms.FloatField(min_value=0)
     st = forms.FloatField(min_value=0)

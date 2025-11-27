@@ -14,4 +14,5 @@ urlpatterns = [
     path("signout/", views.signout, name="signout"),
     path("my-appointments/", views.my_appointments, name="my_appointments"),
     path("appointment/<int:pk>/", views.appointment_detail, name="appointment_detail"),
+    path("admin-appointments/", views.admin_appointments, name="admin_appointments"),
 ]
