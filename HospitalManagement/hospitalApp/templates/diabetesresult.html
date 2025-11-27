@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'imports.html' %}
+</head>
+<style>
+    section{
+        margin-top: 10px;
+    }
+    #footer{
+        margin-top: 250px;
+    }
+    h2{
+        color: brown;
+
+    }
+    .prediction{
+        width: 800px;
+        margin: 0 auto;
+        font-size: 20px;
+    }
+</style>
+
+<body>
+    <section>
+        {% include 'navbar.html' %}
+    </section>
+
+    <section>
+        <h1>Diabetes prediction Result</h1>
+    </section>
+
+    <section>
+        <div >
+            <pre class="prediction">{{ result }}</pre>
+
+        </div>
+    </section>
+
+
+</body>
+
+<section id="footer">
+    <footer>
+        {% include 'footer.html' %} {% include 'scripts.html' %}
+    </footer>
+
+</section>
+
+
+
+
+</html>

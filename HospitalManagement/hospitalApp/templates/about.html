@@ -1,0 +1,30 @@
+{% load static %}
+{% include 'imports.html' %}
+{% include 'navbar.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Diabetes Predictor</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+    <main>
+        <h2> About Us</h2>
+        <p> Our disease prediction platform is a web-based tool that enables users to estimate their risk of breast cancer, diabetes, and heart disease by analyzing their symptoms, medical history, and other relevant details.</p>
+        <p> The system is built to offer accurate and dependable insights, empowering users to make well-informed health decisions. By leveraging advanced algorithms and machine learning, it processes large datasets to deliver personalized predictions tailored to each individual..</p>
+
+        <h3> Diabetes</h3>
+        <p> Diabetes is a condition in which the body is unable to regulate blood sugar levels. There are two main types of diabetes: type 1 diabetes and type 2 diabetes. Our system takes into account a user's age, weight, family history, and other factors to predict their risk of developing diabetes.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Diabetes Prediction System</p>
+    </footer>
+
+    {% include 'footer.html' %}
+    {% include 'scripts.html' %}
+</body>
+</html>
