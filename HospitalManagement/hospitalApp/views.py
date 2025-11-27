@@ -50,14 +50,14 @@ def diabetesprediction(request):
         return redirect('diabetes')
 
     data = form.cleaned_data
-    pregnancies = data['pregnancies']
-    glucose = data['glucose']
-    bp = data['bp']
-    st = data['st']
-    insulin = data['insulin']
-    bmi = data['bmi']
-    dp = data['dp']
-    age = data['age']
+    pregnancies = data.get('pregnancies', 0) or 0
+    glucose = data['glucose'] or 0
+    bp = data['bp'] or 0
+    st = data['st'] or 0
+    insulin = data['insulin'] or 0
+    bmi = data['bmi'] or 0
+    dp = data['dp'] or 0
+    age = data['age'] or 0
 
     # Handle account creation for anonymous users if saving appointment
     user = request.user if request.user.is_authenticated else None
@@ -82,56 +82,44 @@ def diabetesprediction(request):
             return redirect('diabetes')
 
     # Load model file (see MODEL_PATH in this file)
-    scaler = gb = rf = svm = None
+    scaler = gb = rf = svm = gb_accuracy = rf_accuracy = svm_accuracy = None
     try:
-        model_obj = joblib.load(MODEL_PATH)
-        if isinstance(model_obj, dict):
-            scaler = model_obj.get('scaler') or model_obj.get('standard_scaler')
-            gb = model_obj.get('gb') or model_obj.get('gradient_boosting') or model_obj.get('model')
-            rf = model_obj.get('rf')
-            svm = model_obj.get('svm')
-        else:
-            # single model file
-            gb = model_obj
+        model_dict = joblib.load(MODEL_PATH)
+
+        # Extract the models, scaler, and accuracies from the dictionary
+        scaler = model_dict.get('scaler')
+        gb = model_dict.get('gradient_boosting')
+        rf = model_dict.get('random_forest')
+        svm = model_dict.get('svm')
+
+        gb_accuracy = model_dict.get('gb_accuracy')
+        rf_accuracy = model_dict.get('rf_accuracy')
+        svm_accuracy = model_dict.get('svm_accuracy')
+
+        if not all([scaler, gb, rf, svm]):
+            raise ValueError("One or more models are missing from the dictionary")
     except Exception as e:
         messages.error(request, f"Error loading model: {e}")
         return redirect('diabetes')
 
+    # Prepare the input data
     X = np.array([[pregnancies, glucose, bp, st, insulin, bmi, dp, age]])
-    if scaler is not None:
-        try:
-            X = scaler.transform(X)
-        except Exception:
-            pass
+    X_scaled = scaler.transform(X)
 
-    def readable(pred):
-        return "Positive" if int(pred) == 1 else "Negative"
+    # Make predictions with all models
+    prediction_gb = gb.predict(X_scaled)[0]
+    prediction_rf = rf.predict(X_scaled)[0]
+    prediction_svm = svm.predict(X_scaled)[0]
 
-    results = []
-    # helper to run model safely
-    def run_model(name, model):
-        if model is None:
-            return
-        try:
-            pred = model.predict(X)[0]
-            prob = None
-            if hasattr(model, "predict_proba"):
-                try:
-                    prob = model.predict_proba(X)[0, 1]
-                except Exception:
-                    prob = None
-            if prob is not None:
-                results.append(f"{name}: {readable(pred)} (prob={prob:.3f})")
-            else:
-                results.append(f"{name}: {readable(pred)}")
-        except Exception as e:
-            results.append(f"{name}: error ({e})")
+    # Interpret the results and include accuracy in the output
+    results = {
+        'Gradient Boosting': f'You have diabetes (Model Accuracy: {gb_accuracy * 100:.2f}%)' if prediction_gb == 1 else f'You do not have diabetes (Model Accuracy: {gb_accuracy * 100:.2f}%)',
+        'Random Forest': f'You have diabetes (Model Accuracy: {rf_accuracy * 100:.2f}%)' if prediction_rf == 1 else f'You do not have diabetes (Model Accuracy: {rf_accuracy * 100:.2f}%)',
+        'SVM': f'You have diabetes (Model Accuracy: {svm_accuracy * 100:.2f}%)' if prediction_svm == 1 else f'You do not have diabetes (Model Accuracy: {svm_accuracy * 100:.2f}%)'
+    }
 
-    run_model("GradientBoosting", gb)
-    run_model("RandomForest", rf)
-    run_model("SVM", svm)
-
-    result_text = "\n".join(results) if results else "No predictions available."
+    # Combine the results into a formatted string with each prediction on a new line
+    result_text = '\n'.join([f"{model_name}: {prediction}" for model_name, prediction in results.items()])
 
     # Optionally save submission and appointment
     if data.get('save_and_appointment'):
